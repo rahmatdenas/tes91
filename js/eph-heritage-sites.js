@@ -130,16 +130,14 @@ if (!record.tahunBerdiri && result.tahunBerdiriMentah && result.tahunBerdiriMent
         record.rawTahunBerdiri = result.tahunBerdiriMentah.value.replace(/^[+-]/, '');
       }
 
-      // === KODE BARU: LOGIKA KLASTER MASJID PENTING ===
-      let isBesar = result.isMasjidBesar ? result.isMasjidBesar.value : "false";
-      let isAgung = result.isMasjidAgung ? result.isMasjidAgung.value : "false";
-      let isJami  = result.isMasjidJami  ? result.isMasjidJami.value  : "false";
-
-      // Jika salah satu saja true, beri stempel masuk klaster
-      if (isBesar === "true" || isAgung === "true" || isJami === "true") {
+// === KODE BARU: LOGIKA KLASTER MASJID PENTING (DIOPTIMALKAN) ===
+      // Langsung tangkap kesimpulan dari server Wikidata
+      let statusKlaster = result.isKlasterPenting ? result.isKlasterPenting.value : "false";
+      
+      if (statusKlaster === "true") {
         record.masukKlasterPenting = true;
       }
-      // ===============================================
+      // ==============================================================
 
     },
     function() {
