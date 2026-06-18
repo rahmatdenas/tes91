@@ -303,7 +303,7 @@ function renderDynamicDataInPanel(qid) {
 let tautanSuntingEvent = `<a href="${wikiBaseUrl}#P793" target="_blank" class="sunting-link" title="Sunting peristiwa di Wikidata"></a>`;
 
     record.events.forEach(ev => {
-      let capLabel = ev.label.charAt(0).toLowerCase() + ev.label.slice(1);
+      let capLabel = ev.label.charAt(0).toUpperCase() + ev.label.slice(1);
       let timeText = ev.time ? ev.time : ''; 
       html += `<p>${capLabel}: ${timeText}${tautanSuntingEvent}</p>`;
     });
