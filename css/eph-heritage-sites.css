@@ -198,7 +198,7 @@ optgroup option {
 /* =========================================
    2. Tautan [Sunting] (Ikon Pensil)
    ========================================= */
-#details .sunting-link {
+.sunting-link {
   display: inline-block;
   width: 13px;
   height: 13px;
@@ -217,7 +217,7 @@ optgroup option {
   text-decoration: none;
 }
 
-#details .sunting-link:hover {
+.sunting-link:hover {
   /* Alih-alih kotak abu-abu, kita buat pensilnya menjadi merah gelap saat disentuh */
   background-color: #a22; 
 }
