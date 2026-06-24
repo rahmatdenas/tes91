@@ -539,6 +539,9 @@ function updateFeatureCounts(totalValidRecords) {
 }
 
 function applyIntersectionFilter(preventZoom = false) {
+  // === PASANG GEMBOKNYA DI SINI SAYANGKU ===
+  if (!PrimaryDataIsLoaded) return;
+
   Cluster.clearLayers();
   let ol = document.getElementById('index-list');
   ol.innerHTML = '';
