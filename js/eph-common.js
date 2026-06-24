@@ -81,26 +81,74 @@ function setupLandingForm() {
 }
 
 function resetApp() {
+  // 1. Bunuh Koneksi yang Sedang Berjalan
   if (activeXhrs.length > 0) {
     activeXhrs.forEach(xhr => xhr.abort());
     activeXhrs = []; 
   }
 
+  // 2. Bersihkan Memori Inti
   Records = {};
   ProvinceIndex = {};
   BootstrapDataIsLoaded = false;
   PrimaryDataIsLoaded = false;
-  isFetching = false; // Kembalikan status ke Menganggur
+  isFetching = false; 
   
   currentFilteredRecords = [];
   currentRenderIndex = 0;
 
+  // 3. Bersihkan Titik di Peta
   if (Cluster) {
     Cluster.clearLayers();
   }
 
+  // 4. Bersihkan Daftar Bangunan
   let indexList = document.getElementById('index-list');
   if (indexList) indexList.innerHTML = '';
+
+  // =========================================================
+  // KUNCI PERBAIKAN: BERSIHKAN "HANTU KOSMETIK" DI TAMPILAN
+  // =========================================================
+
+  // A. Kembalikan Menu Wilayah ke status kosong
+  let selectRegion = document.getElementById('filter-region');
+  if (selectRegion) {
+    selectRegion.innerHTML = '<option value="all">Semua Wilayah</option>';
+    selectRegion.value = 'all';
+  }
+
+  // B. Kembalikan Menu Usia ke default
+  let selectKombinasi = document.getElementById('filter-sort-kombinasi');
+  if (selectKombinasi) selectKombinasi.value = 'default';
+
+  // C. Bersihkan Kotak Pencarian dan Angka Hasil
+  let searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.placeholder = 'Ketik yang ingin dicari...'; // Teks netral
+  }
+
+  // D. Matikan semua tombol filter (Gambar/Artikel), dan nyalakan tombol "Semua Hasil"
+  let btnAll = document.getElementById('btn-all');
+  if (btnAll) {
+    btnAll.classList.add('active');
+    btnAll.textContent = 'Semua Hasil';
+  }
+  document.querySelectorAll('.feat-btn:not(#btn-all)').forEach(b => {
+    b.classList.remove('active');
+  });
+
+  // E. Kembalikan teks asli pada tombol (jika sebelumnya ada angka jumlahnya)
+  let btnImg = document.getElementById('btn-image') || document.querySelector('[data-filter="image"]');
+  let btnArt = document.getElementById('btn-article') || document.querySelector('[data-filter="article"]');
+  if (btnImg) btnImg.textContent = 'Memiliki Gambar';
+  if (btnArt) btnArt.textContent = 'Memiliki Artikel';
+
+  // F. Reset memori variabel filter di JS 3 agar tidak menyisakan status
+  if (typeof activeFeatures !== 'undefined' && activeFeatures.clear) activeFeatures.clear();
+  if (typeof currentRegionFilter !== 'undefined') currentRegionFilter = 'all';
+  if (typeof currentUsiaFilter !== 'undefined') currentUsiaFilter = 'all';
+  if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = '';
 }
 
 function initMap() {
