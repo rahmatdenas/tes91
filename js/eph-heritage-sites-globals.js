@@ -27,14 +27,10 @@ WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "id". }
 }`;
 
-const SPARQL_QUERY_1 =
+const SPARQL_QUERY_1_TEMPLATE =
 `SELECT DISTINCT ?siteQid ?coord WHERE {
-  { SELECT ?provinsi WHERE { ?provinsi wdt:P31 wd:Q5098 . } }
-  
-  VALUES ?jenis { <PLACEHOLDER_JENIS> }
-  
-  ?site wdt:P31 ?jenis ;
-        wdt:P131+ ?provinsi .
+  // Masukkan daftar ID bangunan hasil cicilan di sini
+  VALUES ?site { <PLACEHOLDER_QIDS> }
 
   ?site p:P625 ?coordStatement .
   ?coordStatement ps:P625 ?coord .
@@ -42,14 +38,10 @@ const SPARQL_QUERY_1 =
   BIND (SUBSTR(STR(?site), 32) AS ?siteQid) .
 }`;
 
-const SPARQL_QUERY_3 =
+const SPARQL_QUERY_3_TEMPLATE =
 `SELECT ?siteQid (SAMPLE(?imgUtama) AS ?image) (SAMPLE(?wikiTitle) AS ?wikipediaUrlTitle) WHERE {
-  { SELECT ?provinsi WHERE { ?provinsi wdt:P31 wd:Q5098 . } }
-  
-  VALUES ?jenis { <PLACEHOLDER_JENIS> }
-  
-  ?site wdt:P31 ?jenis ;
-        wdt:P131+ ?provinsi .
+  // Masukkan daftar ID bangunan hasil cicilan di sini
+  VALUES ?site { <PLACEHOLDER_QIDS> }
   
   OPTIONAL {
     ?site p:P18 ?imageStatement .
