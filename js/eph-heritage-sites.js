@@ -120,40 +120,36 @@ function populateProvinceTypesData() {
   // 1. Tentukan kategori dan simpan di ingatan global
   currentKategoriUtama = tentukanKategoriKueri(inputTxt);
   
-  // 2. Ambil kueri dari Kamus. Jika 'alam', pinjam kueri 'general' (karena butuh P131+ juga)
+  // 2. Ambil kueri dari Kamus. Jika 'alam', pinjam kueri 'general'
   let namaKueri = (currentKategoriUtama === 'alam') ? 'general' : currentKategoriUtama;
   let baseQuery = KUMPULAN_KUERI_0[namaKueri];
   
-// 3. Suntikkan Dropdown Wilayah
-  let wilayahClause = '';
+  // 3. Masukkan Jenis Entitas (Gunung, Masjid, dll)
+  let dynamicQuery = baseQuery.replace('<PLACEHOLDER_JENIS>', inputTxt);
+
+  // 4. Operasi Jantung untuk Wilayah
   if (provInput === 'all') {
-    wilayahClause = '{ SELECT ?provinsi WHERE { ?provinsi wdt:P31 wd:Q5098 . } }';
+    // Mode pencarian seluruh Indonesia
+    let wilayahClause = '{ SELECT ?provinsi WHERE { ?provinsi wdt:P31 wd:Q5098 . } }';
+    dynamicQuery = dynamicQuery.replace('<PLACEHOLDER_WILAYAH>', wilayahClause);
   } else {
-    // === SOLUSI "SMART INJECTION" (BEBAS TIMEOUT & DROPDOWN LENGKAP) ===
+    // Mode pencarian Provinsi Spesifik
     if (currentKategoriUtama === 'wilayah') {
-      // Khusus pencarian Kabupaten/Kota itu sendiri, kita langsung ikat
-      wilayahClause = `BIND(${provInput} AS ?provinsi)`;
+      // Jika mencari Kabupaten/Kota itu sendiri, Ikat Langsung!
+      dynamicQuery = dynamicQuery.replace('<PLACEHOLDER_WILAYAH>', `BIND(${provInput} AS ?provinsi)`);
     } else {
-      // Untuk Bangunan, Alam, dan Pers:
-      // Paksa mesin mencari JENIS-nya dulu, baru menelusuri Kabupatennya!
-      let targetVar = (currentKategoriUtama === 'pers') ? '?kantor' : '?site';
-      let persLink  = (currentKategoriUtama === 'pers') ? '?site wdt:P159 ?kantor .' : '';
+      // UNTUK GUNUNG, BANGUNAN, PERS:
+      // A. Kosongkan placeholder atas agar terhindar dari Timeout
+      dynamicQuery = dynamicQuery.replace('<PLACEHOLDER_WILAYAH>', '');
       
-      wilayahClause = `
-        VALUES ?jenis_temp { ${inputTxt} }
-        ?site wdt:P31 ?jenis_temp .
-        ${persLink}
-        ${targetVar} wdt:P131+ ${provInput} .
-        ${targetVar} wdt:P131+ ?provinsi .
-        ?provinsi wdt:P131 ${provInput} .
-      `;
+      // B. Suntikkan Jangkar Ganda persis di tempat lokasinya diproses!
+      // Ini memastikan mesin mencari Gunung DULU, baru mencari Kabupatennya.
+      dynamicQuery = dynamicQuery.replace(
+        'wdt:P131+ ?provinsi', 
+        `wdt:P131+ ${provInput} ; wdt:P131+ ?provinsi . ?provinsi wdt:P131 ${provInput}`
+      );
     }
   }
-  
-  // 4. Rakit kueri final
-  let dynamicQuery = baseQuery
-    .replace('<PLACEHOLDER_WILAYAH>', wilayahClause)
-    .replace('<PLACEHOLDER_JENIS>', inputTxt);
 
   return queryWdqsThenProcess(
     dynamicQuery,
