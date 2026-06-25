@@ -15,6 +15,7 @@ const MAX_PH_LAT              = -11.0;
 const MIN_PH_LON              =  95.0;   
 const MAX_PH_LON              = 141.0;   
 
+var currentKategoriUtama = 'general';
 var Records = {};        
 var ProvinceIndex = {};  
 var SparqlValuesClause;  
@@ -118,8 +119,17 @@ function resetApp() {
   }
 
   // B. Kembalikan Menu Usia ke default
-  let selectKombinasi = document.getElementById('filter-sort-kombinasi');
-  if (selectKombinasi) selectKombinasi.value = 'default';
+let selectKombinasi = document.getElementById('filter-sort-kombinasi');
+  
+  if (selectKombinasi) {
+    // Jika entitasnya Alam atau Wilayah, hilangkan filter usia dari layar!
+    if (currentKategoriUtama === 'alam' || currentKategoriUtama === 'wilayah') {
+      selectKombinasi.style.display = 'none';
+    } else {
+      selectKombinasi.style.display = ''; // Munculkan kembali untuk bangunan
+      selectKombinasi.value = 'default';
+    }
+  }
 
   // C. Bersihkan Kotak Pencarian dan Angka Hasil
   let searchInput = document.getElementById('search-input');
