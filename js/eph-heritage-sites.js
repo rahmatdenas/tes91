@@ -132,7 +132,9 @@ function tentukanKategoriKueri(inputTxt) {
   // Regex \b digunakan agar Q8502 tidak terpanggil di dalam teks Q850299 dll
   let isAlam = kelompokAlam.some(qid => new RegExp(`\\b${qid}\\b`).test(teks));
   if (isAlam) return 'alam';
-  
+  // Tambahkan deteksi Artefak & Kuliner agar tidak jatuh ke 'general' (P131)
+  if (teks.includes('Q3305213') || teks.includes('Q1641020') || teks.includes('Q87167') || teks.includes('Q220659')) return 'artefak';
+  if (teks.includes('Q19861951')) return 'kuliner';
   return 'general';
 }
 
@@ -198,6 +200,23 @@ function dapatkanNamaKlaster(inputTxt) {
   return 'Objek'; 
 }
 
+// Fungsi baru untuk menentukan P-ID berdasarkan nama klaster
+function dapatkanPropertiWikidata(namaKlaster) {
+  const pakaiP276 = [
+    'Hidangan', 'Pakaian', 'Tari dan pertunjukan', 'Ritual dan upacara', 
+    'Budaya rakyat', 'Lukisan', 'Lontar', 'Naskah', 'Artefak'
+  ];
+  if (pakaiP276.includes(namaKlaster)) return 'P276'; 
+  
+  if (['Bahasa'].includes(namaKlaster)) return 'P2341'; // Wilayah penutur asli
+  if (['Tokoh'].includes(namaKlaster)) return 'P19'; // Tempat lahir
+  if (['Publikasi', 'Media massa'].includes(namaKlaster)) return 'P291'; // Tempat terbit
+  if (['Latar karya sastra'].includes(namaKlaster)) return 'P840'; // Latar naratif
+  
+  // Default untuk Bangunan, Alam Fisik (Gunung, Pantai, dll), Wilayah, Gempa Bumi
+  return 'P131'; 
+}
+
 function populateProvinceTypesData() {
   let inputTxt = document.getElementById('jenis-input').value.trim();
   let provDropdown = document.getElementById('provinsi-input');
@@ -215,18 +234,7 @@ function populateProvinceTypesData() {
   }
   let baseQuery = KUMPULAN_KUERI_0['universal'];
   
-  const petaProperti = {
-    'general': 'P131',
-    'alam': 'P131',
-    'pers': 'P159',
-    'publikasi': 'P291',
-    'fiksi': 'P840',
-    'tokoh': 'P19',
-    'bahasa': 'P2341',
-    'kuliner': 'P276'
-  };
-  
-  let propLokasi = petaProperti[currentKategoriUtama] || 'P131'; 
+let propLokasi = dapatkanPropertiWikidata(currentNamaKlaster);
   
   let wilayahClause1 = '';
   let unionEkstra = ''; 
@@ -312,18 +320,7 @@ function populateCoordinatesData() {
   // === MENGGUNAKAN TEMPLAT UNIVERSAL UNTUK KOORDINAT ===
   let templateKueri = KUMPULAN_KUERI_1['universal'];
 
-  const petaProperti = {
-    'general': 'P131',
-    'alam': 'P131',
-    'pers': 'P159',
-    'publikasi': 'P291',
-    'fiksi': 'P840',
-    'tokoh': 'P19',
-    'bahasa': 'P2341',
-    'kuliner': 'P276'
-  };
-  
-  let propLokasi = petaProperti[kategori] || 'P131'; 
+let propLokasi = dapatkanPropertiWikidata(currentNamaKlaster);
   let klausaKoordinat = '';
 
   if (kategori === 'general' || kategori === 'alam') {
