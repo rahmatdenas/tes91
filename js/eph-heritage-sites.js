@@ -129,13 +129,17 @@ function dapatkanNamaKlaster(inputTxt) {
   let teks = inputTxt.toUpperCase();
   
   // Daftarkan kelompok klastermu di sini
-const kelompokMasjid = ['Q32815', 'Q56235676', 'Q56235673', 'Q1454820'];
-if (kelompokMasjid.some(qid => teks.includes(qid))) return 'Masjid';
-const kelompokMasjid = ['Q16970', 'Q2977', 'Q56242215'];
-if (kelompokMasjid.some(qid => teks.includes(qid))) return 'Gereja';
+  const kelompokMasjid = ['Q32815', 'Q56235676', 'Q56235673', 'Q1454820'];
+  if (kelompokMasjid.some(qid => teks.includes(qid))) return 'Masjid';
+
+  const kelompokGereja = ['Q16970', 'Q2977', 'Q56242215'];
+  if (kelompokGereja.some(qid => teks.includes(qid))) return 'Gereja';
+
   if (teks.includes('Q15104430')) return 'Cagar Alam';
-const kelompokMasjid = ['Q137894610', 'Q35112127', 'Q4246737', 'Q19860854', '109607'];
-if (kelompokMasjid.some(qid => teks.includes(qid))) return 'Bangunan';
+
+  const kelompokBangunan = ['Q137894610', 'Q35112127', 'Q4246737', 'Q19860854', 'Q109607']; // <-- Awalan Q sudah ditambahkan
+  if (kelompokBangunan.some(qid => teks.includes(qid))) return 'Bangunan';
+
   if (teks.includes('Q55488')) return 'Stasiun';
   if (teks.includes('Q44782')) return 'Pelabuhan';
   if (teks.includes('Q23442')) return 'Pulau';
@@ -145,6 +149,7 @@ if (kelompokMasjid.some(qid => teks.includes(qid))) return 'Bangunan';
   if (teks.includes('Q7725634')) return 'Karya Fiksi';
   if (teks.includes('Q3305213')) return 'Lukisan';
   if (teks.includes('Q1641020')) return 'Lontar';
+  
   const kelompokKuliner = ['Q19861951', 'Q3305213', 'Q87167', 'Q11460', 'Q107357104', 'Q189819', 'Q36192', 'Q7944'];
   if (kelompokKuliner.some(qid => teks.includes(qid))) return 'Kuliner';
   
