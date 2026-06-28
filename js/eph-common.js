@@ -377,9 +377,29 @@ function activateMapMarker(qid) {
 
   // Skenario 2: Buka dari daftar, koordinat bertumpuk > 60
   if (countSameLocation > 60) {
-    // Jangan gunakan zoomToShowLayer (karena memaksa spiderfy)
-    // Cukup tembak koordinatnya secara langsung tanpa membuka popup
+    // 1. Arahkan kamera peta ke lokasi tersebut
     Map.setView([record.lat, record.lon], TILE_LAYER_MAX_ZOOM);
+
+    // 2. Beri jeda sedikit agar peta selesai merender geseran kamera
+    setTimeout(() => {
+      // Cari elemen gelembung klaster yang menampung titik marker ini
+      let visibleParent = Cluster.getVisibleParent(record.mapMarker);
+      
+      // Pastikan klasternya ditemukan di layar dan memiliki elemen HTML (ikon)
+      if (visibleParent && visibleParent._icon) {
+        
+        // Suntikkan kelas CSS animasi denyut
+        visibleParent._icon.classList.add('cluster-efek-denyut');
+        
+        // Bersihkan (hapus) kelas CSS tersebut setelah 4.5 detik (3x detak denyut)
+        setTimeout(() => {
+          if (visibleParent._icon) {
+            visibleParent._icon.classList.remove('cluster-efek-denyut');
+          }
+        }, 4500);
+      }
+    }, 350); // Jeda 350 milidetik sebelum animasi dimulai
+
   } else {
     // Skenario Normal: Jumlah aman, biarkan sistem mengurai klaster dan membuka popup
     Cluster.zoomToShowLayer(
@@ -391,6 +411,7 @@ function activateMapMarker(qid) {
     );
   }
 }
+
 function displayPanelContent(id) {
   document.querySelectorAll('.panel-content').forEach(content => {
     content.style.display = (content.id === id) ? content.dataset.display : 'none';
