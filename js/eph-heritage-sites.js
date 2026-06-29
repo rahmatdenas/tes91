@@ -590,6 +590,9 @@ if (record.dynamicProps && Object.keys(record.dynamicProps).length > 0) {
       else if (key === 'kapasitas' || key === 'korban') {
         formattedValue = parseInt(rawValue).toLocaleString('id-ID');
       }
+        else if (key === 'ketinggian') {
+        formattedValue = parseInt(rawValue).toLocaleString('id-ID') + " mdpl";
+      }
       else if (key === 'lamanResmi') {
         formattedValue = `<a href="${rawValue}" target="_blank" rel="noopener noreferrer" style="word-break: break-all;">Kunjungi Situs Web</a>`;
       }
@@ -604,7 +607,7 @@ if (record.dynamicProps && Object.keys(record.dynamicProps).length > 0) {
         formattedValue = formattedValue.replace(/\bbahasa\s+/gi, '');
       }
 
-      html += `<p><strong>${titleLabel}:</strong> ${formattedValue}</p>`;
+      html += `<p>${titleLabel}: ${formattedValue}</p>`;
     }
   }
 
