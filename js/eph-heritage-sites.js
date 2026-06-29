@@ -537,15 +537,15 @@ function renderDynamicDataInPanel(qid) {
   // ==========================================
   
   // Kamus untuk mengubah kode variabel menjadi Teks Bahasa Indonesia yang rapi di layar
-  const labelKamus = {
-    ketinggian: 'Ketinggian (mdpl)', luas: 'Luas wilayah (km²)', kapasitas: 'Kapasitas',
+const labelKamus = {
+    ketinggian: 'Ketinggian', luas: 'Luas', kapasitas: 'Kapasitas',
     kondisi: 'Kondisi', lamanResmi: 'Laman resmi', fasilitasList: 'Fasilitas',
     arsitek: 'Arsitek', gayaList: 'Gaya arsitektur', populasi: 'Jumlah penduduk',
     kepalaDaerah: 'Kepala daerah', jalurList: 'Jalur penghubung', jumlahKoleksi: 'Jumlah koleksi',
     spesialisasiList: 'Spesialisasi', tglTemu: 'Tanggal penemuan', tempatTemu: 'Lokasi penemuan',
     bahasaList: 'Bahasa', bentukList: 'Bentuk karya', penulisList: 'Penulis/pencipta',
     subjekList: 'Subjek utama', kolektorList: 'Koleksi dari', pemredList: 'Pimpinan redaksi',
-    pendiriList: 'Pendiri', penerbit: 'Penerbit', bahanList: 'Bahan/komposisi',
+    pendiriList: 'Pendiri', penerbit: 'Penerbit', bahanList: 'Bahan/Komposisi',
     caraList: 'Cara pembuatan', penutur: 'Jumlah penutur', tglWafat: 'Tanggal wafat',
     pekerjaanList: 'Pekerjaan', pegunungan: 'Bagian dari pegunungan', korban: 'Korban jiwa'
   };
@@ -554,9 +554,9 @@ function renderDynamicDataInPanel(qid) {
     for (let key in record.dynamicProps) {
       let rawValue = record.dynamicProps[key];
       let formattedValue = rawValue;
-      let titleLabel = labelKamus[key] || key; // Gunakan kamus, jika tidak ada pakai nama asli
+      let titleLabel = labelKamus[key] || key; 
 
-      // FORMATTING KHUSUS: Angka & Keterangan Waktu ("5000000|2024")
+      // FORMATTING KHUSUS
       if (key === 'populasi' || key === 'penutur') {
         let [angka, tahun] = rawValue.split('|');
         let angkaRapi = parseInt(angka).toLocaleString('id-ID');
@@ -566,21 +566,37 @@ function renderDynamicDataInPanel(qid) {
         let [nama, tahun] = rawValue.split('|');
         formattedValue = tahun !== 'null' ? `${nama} (sejak ${tahun})` : nama;
       }
-      else if (key === 'kapasitas' || key === 'jumlahKoleksi' || key === 'korban') {
+      else if (key === 'luas') {
+        // Pecah Luas: Angka | Satuan | Sahih/Keterangan
+        let [angka, satuan, bagian] = rawValue.split('|');
+        let angkaRapi = parseFloat(angka).toLocaleString('id-ID');
+        let teksLuas = satuan ? `${angkaRapi} ${satuan}` : angkaRapi;
+        formattedValue = bagian ? `${teksLuas} (untuk ${bagian})` : teksLuas;
+      }
+      else if (key === 'jumlahKoleksi') {
+        // Pecah Koleksi: Angka | Satuan
+        let [angka, satuan] = rawValue.split('|');
+        let angkaRapi = parseInt(angka).toLocaleString('id-ID');
+        formattedValue = satuan ? `${angkaRapi} ${satuan}` : angkaRapi;
+      }
+      else if (key === 'kapasitas' || key === 'korban') {
         formattedValue = parseInt(rawValue).toLocaleString('id-ID');
       }
       else if (key === 'lamanResmi') {
         formattedValue = `<a href="${rawValue}" target="_blank" rel="noopener noreferrer" style="word-break: break-all;">Kunjungi Situs Web</a>`;
       }
       else if (key === 'tglTemu' || key === 'tglWafat') {
-        // Ambil 4 karakter pertama (Tahun) dari string waktu ISO Wikidata
-        formattedValue = rawValue.substring(0, 4);
+        // Pecah Waktu: String Waktu | Presisi (lalu serahkan pada formatWikidataDate)
+        let [waktu, presisi] = rawValue.split('|');
+        formattedValue = formatWikidataDate(waktu, presisi);
       }
       
-      // Jika hasil akhirnya huruf kecil semua, kita beri kapital di awal
-      if (typeof formattedValue === 'string' && !formattedValue.includes('<a ')) {
-        formattedValue = formattedValue.charAt(0).toUpperCase() + formattedValue.slice(1);
+      // Aturan Khusus Hidangan (Bahan & Cara huruf kecil semua)
+      if (key === 'bahanList' || key === 'caraList') {
+        formattedValue = formattedValue.toLowerCase();
       }
+
+      // Kapitalisasi paksa telah dicabut, data tampil persis sesuai ejaan Wikidata
 
       html += `<p>${titleLabel}: ${formattedValue}</p>`;
     }
