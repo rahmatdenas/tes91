@@ -545,7 +545,7 @@ const labelKamus = {
     spesialisasiList: 'Spesialisasi', tglTemu: 'Tanggal penemuan', tempatTemu: 'Lokasi penemuan',
     bahasaList: 'Bahasa', bentukList: 'Bentuk karya', penulisList: 'Penulis/pencipta',
     subjekList: 'Subjek utama', kolektorList: 'Koleksi dari', pemredList: 'Pimpinan redaksi',
-    pendiriList: 'Pendiri', penerbit: 'Penerbit', bahanList: 'Bahan/komposisi',
+    pendiriList: 'Pendiri', penerbit: 'Penerbit', bahanList: 'Bahan',
     caraList: 'Cara pembuatan', penutur: 'Jumlah penutur', tglWafat: 'Tanggal wafat',
     pekerjaanList: 'Pekerjaan', pegunungan: 'Bagian dari', korban: 'Korban jiwa',
     agamaList: 'Agama', bagianDari: 'Bagian dari'
