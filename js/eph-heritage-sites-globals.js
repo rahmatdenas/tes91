@@ -3,7 +3,7 @@
 const BASE_TITLE = 'WikiJelajah';
 
 const KUMPULAN_KUERI_0 = {
-'universal': `SELECT DISTINCT ?SQ ?sLabel ?PQ ?pLabel ?lLabel ?tM ?tP
+'universal': `SELECT DISTINCT ?SQ ?sLabel ?PQ ?pLabel ?LQ ?lLabel ?tM ?tP
 WHERE {
   {
     SELECT DISTINCT ?s ?p ?l WHERE {
@@ -27,6 +27,7 @@ WHERE {
   }
   BIND(SUBSTR(STR(?s), 32) AS ?SQ) .
   BIND(SUBSTR(STR(?p), 32) AS ?PQ) .
+  BIND(SUBSTR(STR(?l), 32) AS ?LQ)
   SERVICE wikibase:label { bd:serviceParam wikibase:language "id". }
 }`,
 
