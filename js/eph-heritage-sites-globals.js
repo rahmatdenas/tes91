@@ -5,52 +5,43 @@ const BASE_TITLE = 'WikiJelajah';
 const KUMPULAN_KUERI_0 = {
   'universal': `SELECT DISTINCT ?SQ ?sLabel ?PQ ?pLabel ?lLabel ?tM ?tP
   WHERE {
-    VALUES ?j { <PLACEHOLDER_JENIS> } 
-    
+    VALUES ?j { <PLACEHOLDER_JENIS> }
     <PLACEHOLDER_KURUNG_BUKA>
       <PLACEHOLDER_WILAYAH_1>
       ?s wdt:P31 ?j ;
          wdt:<PLACEHOLDER_PROP_LOKASI> ?l .
       <PLACEHOLDER_HIERARKI_LOKASI>
     <PLACEHOLDER_KURUNG_TUTUP>
-    
     <PLACEHOLDER_UNION_EKSTRA>
-    
-    OPTIONAL { 
+    OPTIONAL {
       ?s p:<PLACEHOLDER_PROP_TAHUN> ?iS .
       ?iS psv:<PLACEHOLDER_PROP_TAHUN> ?iN .
       ?iN wikibase:timeValue ?tM ;
           wikibase:timePrecision ?tP .
     }
-    
     BIND(SUBSTR(STR(?s), 32) AS ?SQ) .
     BIND(SUBSTR(STR(?p), 32) AS ?PQ) .
-    
     SERVICE wikibase:label { bd:serviceParam wikibase:language "id". }
   }`,
 
   'khusus_negara_all': `SELECT DISTINCT ?SQ ?sLabel ?PQ ?pLabel ?lLabel ?tM ?tP
   WHERE {
-    <PLACEHOLDER_FILTER_NASIONAL> 
+    <PLACEHOLDER_FILTER_NASIONAL>
     ?s wdt:P31 ?j .
-    VALUES ?j { <PLACEHOLDER_JENIS> }   
-    
-    OPTIONAL { 
+    VALUES ?j { <PLACEHOLDER_JENIS> }
+    OPTIONAL {
       ?p wdt:P31 wd:Q5098 .
       ?s wdt:<PLACEHOLDER_PROP_LOKASI> ?l .
       ?l wdt:P131* ?p .
     }
-    
-    OPTIONAL { 
+    OPTIONAL {
       ?s p:<PLACEHOLDER_PROP_TAHUN> ?iS .
       ?iS psv:<PLACEHOLDER_PROP_TAHUN> ?iN .
       ?iN wikibase:timeValue ?tM ;
           wikibase:timePrecision ?tP .
-    }   
-    
+    }
     BIND(SUBSTR(STR(?s), 32) AS ?SQ) .
     BIND(SUBSTR(STR(?p), 32) AS ?PQ) .
-    
     SERVICE wikibase:label { bd:serviceParam wikibase:language "id". }
   }`
 };
