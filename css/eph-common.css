@@ -94,7 +94,9 @@ nav ul li:nth-child(2) { flex: 3; text-align: center; }
 nav ul li:nth-child(3) { flex: 1; text-align: right; }
 
 nav li a {
-  display: inline-block;
+  display: block; /* Mengubah inline-block menjadi block agar memenuhi seluruh area <li> */
+  width: 100%;    /* Memastikan area klik meregang penuh dari ujung ke ujung blok */
+  box-sizing: border-box; /* Menjaga ukuran tetap pas meski ada padding */
   padding: 10px 0;
   font-size: 12px;
   line-height: 12px;
@@ -300,17 +302,13 @@ optgroup option { padding-left: 10px; }
 #index-list li {
   margin: 0;
   padding: 0;
-  transition: background 0.3s, box-shadow 0.3s;
-  -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
 }
 
-@media (hover: hover) and (pointer: fine) {
   #index-list li:hover {
     background: #eaa;
     box-shadow: 0 -1px #eaa;
   }
-}
 
 #index-list li a {
   display: block;
