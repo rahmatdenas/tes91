@@ -934,7 +934,7 @@ function applyIntersectionFilter(preventZoom = false) {
         currentUsiaFilter === 'all' && 
         activeFeatures.size === 0) {
       btnAll.classList.add('active');
-      btnAll.textContent = 'Semua Hasil'; 
+      btnAll.textContent = 'Pilih Hasil'; 
     } else {
       btnAll.classList.remove('active');
       btnAll.textContent = 'Reset'; 
