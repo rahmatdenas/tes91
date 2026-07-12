@@ -64,14 +64,36 @@ populateProvinceTypesData()
       
       enableApp(); 
       populateImageAndWikipediaData()
+.then(() => {
+      if (currentSearchToken !== tiketPencarianIni) throw 'ABORTED';
+      
+      // 1. Matikan layar loading (isFetching = false)
+      enableApp(); 
+      
+      // =========================================================
+      // +++ KUNCI PERBAIKAN: PAKSA RENDER SEKARANG JUGA +++
+      // =========================================================
+      // Langsung render peta dan daftar SEBELUM antrean gambar/artikel dimulai.
+      // Ini menjamin UI tidak akan tersandera oleh koneksi server yang lambat.
+      applyIntersectionFilter(); 
+      processHashChange();
+      
+      // 2. Tarik gambar dan artikel sebagai "tugas sampingan"
+      populateImageAndWikipediaData()
         .then(() => {
           // Gerbang 3: Cek sebelum memproses gambar/artikel di background
           if (currentSearchToken !== tiketPencarianIni) return; 
           
+          // Render ulang senyap HANYA untuk memperbarui angka di tombol filter Gambar/Artikel
           applyIntersectionFilter(); 
-          Object.values(Records).forEach(r => r.panelElem = undefined);          
-          processHashChange();
+          Object.values(Records).forEach(r => r.panelElem = undefined);         
         })
+        .catch(error => {
+          if (error === 'ABORTED' || currentSearchToken !== tiketPencarianIni) return;
+          console.warn("Gagal mengambil sebagian data Gambar/Wikipedia, server mungkin kelebihan beban.", error);
+          // Walaupun gambar gagal karena data ribuan, aplikasi dan peta tetap berjalan mulus!
+        });
+    })
         .catch(error => {
           if (error === 'ABORTED' || currentSearchToken !== tiketPencarianIni) return;
           console.warn("Gagal mengambil data Gambar/Wikipedia dari server.", error);
