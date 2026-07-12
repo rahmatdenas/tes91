@@ -26,6 +26,7 @@ var PrimaryDataIsLoaded   = false;
 
 var isAppInitialLoad      = true; // Tambahkan ini!
 var isFetching            = false; // Menandai apakah satpam sedang mencari data
+var loadingTimeoutToken = null;
 var currentSearchToken    = 0;     // <--- Letakkan di sini (berdekatan dengan isFetching)
 var globalFetchController = new AbortController(); // <--- (Jika Anda jadi memasang AbortController)
 var activeXhrs            = [];
