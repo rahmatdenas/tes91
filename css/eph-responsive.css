@@ -162,8 +162,10 @@
 }
    
 #details .mode-tokoh figure.gambar-utama {
+  float: right;
   margin: 0 0 7px 10px;
-  width: 150px;
+  width: 156px;
+  float: right;
 }
 
 #details .main-text {
