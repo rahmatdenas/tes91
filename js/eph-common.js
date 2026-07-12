@@ -41,33 +41,27 @@ function init() {
   initMap();
   setupLandingForm();
   window.addEventListener('hashchange', processHashChange);
+  
 Map.on('popupopen', function(e) { 
     let qid = e.popup._qid;
     let record = Records[qid];
     
-    // 1. Panggil panel detail di samping seperti biasa
+    // 1. Panggil panel detail di samping
     displayRecordDetails(qid); 
     
-    // 2. INJEKSI GAMBAR POPUP (Hanya dieksekusi sekali per marker)
-    // Cek apakah datanya punya gambar DAN popup ini belum pernah disuntik gambar
+    // 2. INJEKSI GAMBAR POPUP
     if (record.imageFilename && !e.popup._hasImage) {
       
       let encodedFilename = encodeURIComponent(record.imageFilename);
-      // Minta versi thumbnail kecil saja (width=200) agar loading super cepat
       let imgUrl = `${COMMONS_WIKI_URL_PREF}Special:FilePath/${encodedFilename}?width=250`;
       
-      // KUNCI PENGAMAN: Beri width dan height permanen di tag <img> 
-      // agar Leaflet tidak kebingungan mengukur dimensi popup sebelum gambar selesai dimuat.
       let imgHtml = `
-        <div style="text-align:center; margin-top:7px;">
-          <img src="${imgUrl}" style="width:200px; height:180px; object-fit:cover; border-radius:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Thumbnail">
+        <div style="text-align:center;margin-bottom: 5px;">
+          <img src="${imgUrl}" style="width:250px; height:180px; object-fit:cover; border-radius:4px;" alt="Thumbnail">
         </div>
       `;
+      e.popup.setContent(imgHtml + `${record.title}`);
       
-      // Timpa teks popup lama (yang hanya judul) dengan Judul + Gambar
-      e.popup.setContent(`<strong>${record.title}</strong>` + imgHtml);
-      
-      // Tandai popup ini agar gambar tidak dirender ulang terus-menerus jika pengguna mengekliknya berulang kali
       e.popup._hasImage = true; 
     }
   });
