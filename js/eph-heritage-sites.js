@@ -823,29 +823,35 @@ record.mapMarker = mapMarker;
       });
 
       // =======================================================
-      // +++ LOGIKA ANTI-BOCOR (PENGUKUR WAKTU) +++
+      // +++ LOGIKA KLIK KEDUA (BENDERA STATUS) +++
       // =======================================================
       
-      // 1. Catat waktu persis saat popup terbuka
-      mapMarker.on('popupopen', function() {
-        this._waktuBuka = Date.now();
+      // 1. Saat popup tertutup karena klik tempat lain (Reset ke kondisi awal)
+      mapMarker.on('popupclose', function() {
+        this._sudahDiklikSekali = false;
       });
 
-      // 2. Saat diklik, cek selisih waktunya!
+      // 2. Deteksi setiap klik pada marker
       mapMarker.on('click', function() {
         
-        // Cek: Apakah popup sedang terbuka? DAN 
-        // Apakah terbukanya sudah lebih dari 300 milidetik yang lalu?
-        if (this.isPopupOpen() && this._waktuBuka && (Date.now() - this._waktuBuka > 300)) {
-          
-          // Panggil panel detail untuk merender data Wikipedia, dll
+        // Jika belum ada bendera (berarti ini KLIK PERTAMA)
+        if (!this._sudahDiklikSekali) {
+          // Pasang bendera agar sistem ingat.
+          // Mesin bawaan Leaflet akan otomatis membuka popup-nya di sini.
+          this._sudahDiklikSekali = true; 
+        } 
+        
+        // Jika bendera sudah ada (berarti ini KLIK KEDUA, KETIGA, dst)
+        else {
+          // A. Panggil data Wikipedia dan gambar
           displayRecordDetails(qid); 
           
-          // Tarik panel mobile ke atas
+          // B. Panggil fungsi dari JS Responsif Anda untuk menarik panel ke atas
           if (typeof window.setMobilePanelExpanded === 'function') {
             window.setMobilePanelExpanded(true);
           }
         }
+        
       });
       // =======================================================
 
