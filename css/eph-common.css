@@ -50,9 +50,18 @@ body {
   display: flex;
   flex-direction: column;
   flex: 0 1 500px;
-  height: 100%;
+padding-bottom: 32px;
   background: #822;
 }
+
+#navigasi-utama {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    width: 500px; /* KUNCI: Disamakan persis dengan lebar #panel milikmu */
+    z-index: 9999;
+    background: #822; /* Disamakan dengan warna latar #panel */
+  }
 
 #branding {
   font-family: "Open Sans", sans-serif;
