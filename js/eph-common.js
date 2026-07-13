@@ -587,6 +587,7 @@ function processHashChange() {
     lastValidHash = 'about'; // Catat sebagai hash terakhir yang valid
     document.title = 'Tentang – ' + BASE_TITLE;
     displayPanelContent('about');
+    currentDisplayedQid = null;
   }
   else {
     // HASIL atau DETAIL BUTIR
@@ -635,6 +636,7 @@ function processHashChange() {
         document.title = `${currentNamaKlaster} di ${currentNamaWilayah} – ${BASE_TITLE}`;
         
         displayPanelContent('index');
+        currentDisplayedQid = null;
       }
       else {
         // Buka Detail Butir (Judul otomatis mengikuti nama bangunan/situs karena fungsi displayRecordDetails)
