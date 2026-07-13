@@ -693,6 +693,7 @@ function processHashChange() {
       }
       else {
         // Buka Detail Butir (Judul otomatis mengikuti nama bangunan/situs karena fungsi displayRecordDetails)
+        activateMapMarker(fragment);
         displayRecordDetails(fragment);
       }
     }
