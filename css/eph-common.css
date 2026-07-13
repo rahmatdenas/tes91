@@ -388,7 +388,10 @@ cursor: not-allowed;
    ========================================================================== */
 #details {
   display: none;
-  margin: 20px;
+padding-top: 20px;
+padding-left: 20px;
+padding-right: 20px;
+padding-bottom: 52px;
 }
 
 #details .main-wikidata-link {
