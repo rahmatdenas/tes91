@@ -47,23 +47,31 @@ function init() {
   // =========================================================
   // LANGKAH B: LOGIKA BUKA-TUTUP MENU DROP-UP
   // =========================================================
-  document.addEventListener('click', function(e) {
+document.addEventListener('click', function(e) {
     let btnMenu = document.getElementById('btn-menu-induk');
     let subMenu = document.getElementById('submenu-atas');
     
     if (!btnMenu || !subMenu) return;
 
-    // Jika tombol "Menu" ditekan, buka/tutup anak menu
+    // Jika tombol "Menu" ditekan, buka/tutup anak menu + atur warna aktifnya
     if (e.target === btnMenu) {
-      subMenu.style.display = (subMenu.style.display === 'none') ? 'flex' : 'none';
+      if (subMenu.style.display === 'none') {
+        subMenu.style.display = 'flex';
+        btnMenu.parentElement.classList.add('selected'); // Menyala saat diklik buka
+      } else {
+        subMenu.style.display = 'none';
+        btnMenu.parentElement.classList.remove('selected'); // Padam saat ditutup
+      }
     } 
-    // Jika pengguna mengklik di area luar menu, sembunyikan
+    // Jika pengguna mengklik di area luar menu, sembunyikan dan padamkan
     else if (!subMenu.contains(e.target)) {
       subMenu.style.display = 'none';
+      btnMenu.parentElement.classList.remove('selected');
     } 
-    // Jika pengguna mengklik salah satu link (A) di dalam anak menu, sembunyikan
+    // Jika pengguna mengklik salah satu link di dalam anak menu, sembunyikan dan padamkan
     else if (e.target.tagName === 'A') {
       subMenu.style.display = 'none';
+      btnMenu.parentElement.classList.remove('selected');
     }
   });
   // =========================================================
@@ -152,6 +160,7 @@ loadingTimeoutToken = setTimeout(() => {
 }
 
 function resetApp() {
+  
   currentSearchToken = 0;
 
   if (loadingTimeoutToken) {
@@ -257,6 +266,10 @@ function resetApp() {
   if (typeof currentRegionFilter !== 'undefined') currentRegionFilter = 'all';
   if (typeof currentUsiaFilter !== 'undefined') currentUsiaFilter = 'all';
   if (typeof currentSearchQuery !== 'undefined') currentSearchQuery = '';
+
+  // Taruh baris ini di bagian paling bawah fungsi resetApp()
+  let subMenuAtas = document.getElementById('submenu-atas');
+  if (subMenuAtas) subMenuAtas.style.display = 'none';
 }
 
 function initMap() {
@@ -1051,21 +1064,18 @@ if (currentIndex === -1) {
     }
 
   } else {
- // KEMBALI KE MODE STANDAR (Beranda | Hasil | Tentang)
+// KEMBALI KE MODE STANDAR (Beranda | Hasil | Tentang)
     navStandar.style.display = 'flex';
     navDetail.style.display = 'none';
     
-    // --- KUNCI PERBAIKAN: Gunakan selector .nav-tab agar tidak nyasar ke anak menu ---
-    document.querySelectorAll('#nav-standar .nav-tab').forEach(li => {
-      let link = li.querySelector('a');
+    // KUNCI: Gunakan anak langsung (> li) agar tidak salah sasaran ke dalam submenu
+    document.querySelectorAll('#nav-standar > li, #nav-detail > li').forEach(li => {
+      let link = li.querySelector('a'); // Ini akan membidik tautan induk utama
       if (!link) return;
       let hrefVal = link.getAttribute('href');
       
-      // Jika URL sekarang murni kosong, atau tutorial, atau medsos, anggap "Menu" (Beranda) sedang aktif
-      if ((fragment === '' || fragment === 'tutorial' || fragment === 'medsos') && link.id === 'btn-menu-induk') {
-        li.classList.add('selected');
-      } 
-      else if (fragment === 'hasil' && hrefVal === '#hasil') {
+      // Matikan deteksi otomatis Beranda (''), biarkan Hasil dan Tentang saja yang otomatis
+      if (fragment === 'hasil' && hrefVal === '#hasil') {
         li.classList.add('selected');
       } 
       else if (fragment === 'about' && hrefVal === '#about') {
