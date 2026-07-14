@@ -113,7 +113,7 @@ function updateLabel(expanded) {
     return null;
   }
 
- function onTouchStart(e) {
+  function onTouchStart(e) {
     if (!isMobile()) return;
     
     var touch = e.touches ? e.touches[0] : e;
@@ -124,11 +124,8 @@ function updateLabel(expanded) {
       return; 
     }
 
-    // KUNCI AMAN: Hanya blur jika targetnya BUKAN elemen interaktif
-    if (!['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName)) {
-        if (document.activeElement) {
-            document.activeElement.blur();
-        }
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      document.activeElement.blur();
     }
 
     dragging = true;
@@ -140,15 +137,6 @@ function updateLabel(expanded) {
     activeScrollNode = getScrollableParent(target, panel);
 
     panel.classList.add('eph-dragging');
-
-    // =========================================================
-    // KUNCI PAMUNGKAS: MATIKAN FOKUS INPUT SELAMA TARIKAN (Anti-Ghost)
-    // =========================================================
-    document.querySelectorAll('#search-input, #filter-region, #filter-sort-kombinasi').forEach(input => {
-      // Atribut tabindex="-1" mencegah elemen menerima fokus dari sistem
-      input.setAttribute('tabindex', '-1');
-    });
-    // =========================================================
   }
 
   function onTouchMove(e) {
@@ -209,14 +197,6 @@ function updateLabel(expanded) {
     }
 
     panel.classList.remove('eph-dragging');
-// =========================================================
-    // JINAKKAN KEMBALI: HIDUPKAN FOKUS KETIKA TARIKAN SELESAI
-    // =========================================================
-    document.querySelectorAll('#search-input, #filter-region, #filter-sort-kombinasi').forEach(input => {
-      // Kembalikan ke posisi semula (tabindex:0) saat tarikan selesai
-      input.removeAttribute('tabindex');
-    });
-    // =========================================================
   }
   
   function buildHandle() {
