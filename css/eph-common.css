@@ -200,7 +200,7 @@ nav li.active > a, nav li > a.active {
   }
 }
 .kelas-submenu-mu  li {
-    background: rgb(136, 34, 34)
+    background: #800404e3;
 }
 /* 1. Pengaturan dasar untuk semua <li> */
 .kelas-submenu-mu li {
