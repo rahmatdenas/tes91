@@ -280,14 +280,9 @@ select::-moz-focus-inner {
   outline: none !important;
 }
 
-select:focus,
-input:focus,
-textarea:focus,
-.filter-box select:focus {
-  outline: none !important;
-  box-shadow: none !important;
-  /* Safari kadang menggunakan border rahasia untuk focus ring */
-  -webkit-appearance: none;
+/* MEMBUNUH DELAY 300ms BAWAAN LAYAR SENTUH */
+a, button, select, input, textarea, .feat-btn, .filter-box {
+  touch-action: manipulation !important;
 }
 
 optgroup {
