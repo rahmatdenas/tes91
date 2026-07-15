@@ -708,7 +708,7 @@ function activateMapMarker(qid) {
 
   try {
     Map.closePopup();
-    Map.stop(); // Hentikan animasi sebelumnya jika pengguna klik brutal
+    Map.stop();
 
     let countSameLocation = 0;
     currentFilteredRecords.forEach(r => {
@@ -717,32 +717,13 @@ function activateMapMarker(qid) {
       }
     });
 
-    // =======================================================
-    // FUNGSI UTAS: BUKA POPUP + TRIK OFFSET MOBILE 96px
-    // =======================================================
-    const bukaPopupAman = () => {
-      if (window.location.hash !== '#' + qid) return;
-
-      // JIKA MOBILE: Sentil peta ke bawah 96px dengan animasi halus
-      if (window.innerWidth <= 800) {
-        Map.panBy([0, 96], { animate: true, duration: 0.3 });
-      }
-
-      if (!record.popup.isOpen()) record.mapMarker.openPopup();
-    };
-
-    // SKENARIO A: TITIK BERTUMPUK (> 60)
     if (countSameLocation > 60) {
       Map.setView([record.lat, record.lon], TILE_LAYER_MAX_ZOOM);
-      
       setTimeout(() => {
+        // --- KUNCI PENANGKAL 1 ---
+        // Kalau URL sudah bukan QID ini lagi (misal user udah klik Hasil), batalkan efeknya!
         if (window.location.hash !== '#' + qid) return;
         
-        // JIKA MOBILE DI KLASTER PADAT: Jalankan sentilan offset
-        if (window.innerWidth <= 800) {
-          Map.panBy([0, 96], { animate: true, duration: 0.3 });
-        }
-
         let visibleParent = Cluster.getVisibleParent(record.mapMarker);
         if (visibleParent && visibleParent._icon) {
           visibleParent._icon.classList.add('cluster-efek-denyut');
@@ -751,16 +732,21 @@ function activateMapMarker(qid) {
           }, 4500);
         }
       }, 350);
-    } 
-    // SKENARIO B: TITIK NORMAL
-    else {
+    } else {
       if (Cluster.hasLayer(record.mapMarker)) {
-        // Serahkan pada klaster untuk zoom, setelah selesai jalankan offset
-        Cluster.zoomToShowLayer(record.mapMarker, bukaPopupAman);
+        Cluster.zoomToShowLayer(
+          record.mapMarker,
+          function() {
+            // --- KUNCI PENANGKAL 2 ---
+            // Kalau animasi mekar selesai tapi user udah balik ke Index, JANGAN buka popup!
+            if (window.location.hash !== '#' + qid) return;
+
+            if (!record.popup.isOpen()) record.mapMarker.openPopup();
+          }
+        );
       } else {
-        // Sudah ter-zoom maksimal, langsung offset
         Map.setView([record.lat, record.lon], Map.getZoom());
-        bukaPopupAman();
+        if (!record.popup.isOpen()) record.mapMarker.openPopup();
       }
     }
   } catch (error) {
