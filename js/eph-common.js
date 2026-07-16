@@ -165,7 +165,7 @@ loadingTimeoutToken = setTimeout(() => {
       if (loadingDesc && isFetching) {
         loadingDesc.innerHTML = `Data yang ditarik mencapai ribuan.<br/>Estimasi proses penarikan data 3-5 menit...`;
       }
-    }, 7000); // (7 detik)
+    }, 20000); // (20 detik)
     // =========================================================
 
     loadPrimaryData();
@@ -581,6 +581,15 @@ function processHashChange() {
     isRevertingHash = false;
     return; 
   }
+
+  let logoBranding = document.getElementById('branding-icon');
+if (logoBranding) {
+  logoBranding.classList.add('nyala-sementara');
+  // Matikan lampu logo setelah 600 milidetik (0.6 detik)
+  setTimeout(() => {
+    logoBranding.classList.remove('nyala-sementara');
+  }, 600);
+}
 
   let fragment = window.location.hash.replace('#', '');
 
