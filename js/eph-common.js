@@ -490,6 +490,7 @@ if (attempt === maxRetry) {
   if (currentSearchToken !== tiketSaatIni) throw 'ABORTED';  // "lho, sekarang tiketnya sudah 0, berarti user sudah reset!"
   throw error;
 }
+      await new Promise(r => setTimeout(r, 1500 * attempt));
   }
 }
 }
